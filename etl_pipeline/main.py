@@ -1,14 +1,32 @@
-# This is the main script where you will orchestrate the ETL process, feel free to completely modify the files/structure as you see fit.
+from api_client import APIClient
+from transform_data import DataTransformer
+from load_to_database import BigQueryLoader
+
+def main():
+    # API URL
+    url = "https://jsonplaceholder.typicode.com/posts"
+
+    # Step 1: Fetch Data
+    api_client = APIClient(url)
+    data = api_client.fetch_data()
+
+    if data:
+        # Step 2: Transform Data
+        transformer = DataTransformer(data)
+        transformed_data = transformer.transform()
+
+        # Step 3: Load Transformed Data into BigQuery
+        loader = BigQueryLoader(
+            project_id='ncau-data-newsquery-dev',
+            dataset_id='ntntemp',
+            table_id='post'
+        )
+        
+        # Ensure the table exists
+        loader.create_table_if_not_exists()
+
+        # Load transformed data into BigQuery
+        loader.load_data(transformed_data)
+
 if __name__ == "__main__":
-    print("ETL Job Started")
-
-    # Extract phase
-    # TODO: Implement data extraction logic
-
-    # Transform phase
-    # TODO: Implement data transformation logic
-
-    # Load phase
-    # TODO: Implement data loading logic
-
-    print("ETL Job Finished")
+    main()
