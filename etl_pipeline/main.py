@@ -17,7 +17,7 @@ def main():
 
         # Step 3: Load Transformed Data into BigQuery
         loader = BigQueryLoader(
-            project_id='ncau-data-newsquery-dev',
+            project_id='data-dev',
             dataset_id='ntntemp',
             table_id='post'
         )
